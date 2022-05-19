@@ -1,23 +1,38 @@
-import logo from './logo.svg';
-import './App.css';
+
+import { ToastContainer } from "react-bootstrap";
+import { useAuthState } from "react-firebase-hooks/auth";
+import { Route, Routes } from "react-router-dom";
+import AddTask from "./Components/AddTask";
+import Home from "./Components/Home";
+import Login from "./Components/Login/Login";
+import RequireAuth from "./Components/RequireAuth";
+import Footer from "./Components/Shared/Footer";
+import Header from "./Components/Shared/Header";
+import SignUp from "./Components/SignUp/SignUp";
+import ToDoList from "./Components/ToDoList";
+import auth from "./firebase.init";
+
 
 function App() {
+  const [user] = useAuthState(auth);
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <Header></Header>
+      <Routes>
+        <Route path="/" element={ user ?
+          <RequireAuth>
+            <ToDoList></ToDoList>
+          </RequireAuth>
+          : <Home></Home> }>
+        </Route>
+        <Route path="/addtask" element={ <RequireAuth>
+          <AddTask></AddTask>
+        </RequireAuth> }></Route>
+        <Route path="/login" element={ <Login></Login> }></Route>
+        <Route path="/signup" element={ <SignUp></SignUp> }></Route>
+      </Routes>
+      <Footer></Footer>
+      <ToastContainer />
     </div>
   );
 }
